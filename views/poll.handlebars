@@ -1,18 +1,33 @@
 <div class="container">
 
 	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
+		{{#if message}}
+			<div class="alert alert-danger">
+			  <strong>Sorry!</strong> {{message}}
+			</div>
+		{{/if}}
 		<h2>{{poll.title}}</h2>
 		<h3><b>I would like to vote:</b></h3>
-		<form action="/vote" method="post">
-			<select name="candidate">
-				<option value="" disabled selected>Select your option</option>
-				{{#each poll.options}}
-					<option>{{this.[0]}}</option>
-				{{/each	}}
-			</select>
-			<input type="text" name="id" class="hidden" value="{{poll.id}}">
-			<button class="btn btn-default" type="submit">Vote</button>
-		</form>
+		<div class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
+			<form action="/vote" method="post">
+				<select name="candidate" class="form-control">
+					<option value="" disabled selected>Select your option</option>
+					{{#each poll.options}}
+						<option>{{this.[0]}}</option>
+					{{/each	}}
+				</select></br>
+				<input type="text" name="id" class="hidden" value="{{poll.id}}">
+				<button class="btn btn-primary btn-block" type="submit">Vote</button>
+				<br>
+				<button class="btn btn-default btn-block">
+				<a href="" id='twitter-share'>Share on Twitter</a>
+				</button>
+				<script type="text/javascript">
+					var url = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fmynodevotingapp.herokuapp.com%2Fpolls%2F" + "{{poll._id}}" + "&text=Poll %7C FCC-Voting-App";
+					$('#twitter-share').attr('href',url);
+				</script>
+			</form>
+		</div>
 	</div>
 
 	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
@@ -67,7 +82,7 @@
 						.on("mouseover",tip.show)
 						.on("mouseout",tip.hide)
 						.transition()
-					    .duration(2000)
+					    .duration(1000)
 					    .attrTween("d", tweenPie);
 
 					function tweenPie(b) {

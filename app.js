@@ -8,6 +8,7 @@ var exphbs  = require('express-handlebars');
 var passport = require('passport');
 var mongoose = require('mongoose');
 var session = require('express-session');
+var flash = require('connect-flash');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
@@ -29,6 +30,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+//connect-flash middleware
+app.use(flash());
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

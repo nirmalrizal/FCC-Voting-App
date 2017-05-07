@@ -65,13 +65,15 @@ router.post('/newpoll',function(req,res){
 router.get('/polls/:id',function(req,res){
 	var sess = req.session
 	var user = sess.user;
+	var message = req.flash('vote');
+	console.log(message[0]);
 	Poll.findOne({
 		_id: req.params.id
 	}).exec(function(err,poll){
 		if(err){
 			res.send(err);
 		} else {
-			res.render('poll',{ poll, user });
+			res.render('poll',{ poll, user, message: message[0] });
 		}
 	});
 });
@@ -94,7 +96,7 @@ router.post('/vote',function(req,res){
 			}
 		}
 		if(count){
-			console.log('You have already voted in this poll');
+			req.flash('vote','You have already voted in this poll.');
 			res.redirect('/polls/' + id);
 		} else {
 			Poll.findOne({
