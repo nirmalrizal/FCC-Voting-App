@@ -1,0 +1,83 @@
+<div class="container">
+
+	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
+		<h2>{{poll.title}}</h2>
+		<h3><b>I would like to vote:</b></h3>
+		<form action="/vote" method="post">
+			<select name="candidate">
+				<option value="" disabled selected>Select your option</option>
+				{{#each poll.options}}
+					<option>{{this.[0]}}</option>
+				{{/each	}}
+			</select>
+			<input type="text" name="id" class="hidden" value="{{poll.id}}">
+			<button class="btn btn-default" type="submit">Vote</button>
+		</form>
+	</div>
+
+	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
+
+		<div id="piechart"></div>
+
+		<script type="text/javascript">
+			
+			var height = 300;
+			var width = 300;
+			var padding = 20;
+			var radius = Math.min(width, height) / 2;
+			var dataset = [];
+			var arr = "{{poll.options}}".split(',');
+
+			for(var i=0;i<arr.length;i=i+2){
+				dataset.push({ label: arr[i], count: Number(arr[i+1]) });
+			}
+
+			var svg = d3.select('#piechart')
+						.append('svg')
+						.attr('height',(height-padding))
+						.attr('width',(width-padding))
+						.append('g')
+  						.attr('transform', 'translate(' + (width / 2) +  ',' + (height / 2) + ')');
+
+  			var tip = d3.tip()
+						.attr("class","d3-tip")
+						.offset([0,-10])
+						.html(function(d){return "<div class='tooltip'><span>Title : "+d.data.label+"</span><br /><span>Count : "+d.data.count+"</span></div>";});
+
+			svg.call(tip);
+
+			var color = d3.scaleOrdinal(d3.schemeCategory20);
+
+			var arc = d3.arc()
+					  .innerRadius(0)
+					  .outerRadius(radius-padding);
+
+			var pie = d3.pie()
+						.sort(null)
+					  	.value(function(d) { return d.count; });
+
+			var path = svg.selectAll('path')
+						.data(pie(dataset))
+						.enter()
+						.append('path')
+						.attr('d', arc)
+						.attr('fill', function(d,i) {
+							return color(i);
+						})
+						.on("mouseover",tip.show)
+						.on("mouseout",tip.hide)
+						.transition()
+					    .duration(2000)
+					    .attrTween("d", tweenPie);
+
+					function tweenPie(b) {
+					  b.innerRadius = 0;
+					  var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+					  return function(t) { return arc(i(t)); };
+					}
+
+		</script>
+
+	</div>
+
+</div>

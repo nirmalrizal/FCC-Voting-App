@@ -1,0 +1,14 @@
+<div class="container-fluid">
+	<h1>Make a new poll !!</h1>
+	<form action="/newpoll" method="post">
+		<div class="form-group">
+			<label>Title</label><br>
+			<input type="text" name="title" class="form-control">
+		</div>
+		<div class="form-group">
+			<label>Options(Separated by comma):</label><br>
+			<textarea class="form-control" name="options"></textarea>
+		</div>
+		<button class="btn btn-primary" type="submit">Make</button>
+	</form>
+</div>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Voting App</title>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-tip/0.7.1/d3-tip.min.js"></script>
+	<style type="text/css">
+		
+		.tooltip{
+			border-radius: 4px;
+			background-color: #000;
+			height: 80px;
+			width: 150px;
+			color: #fff;
+			text-align: center;
+			padding-top: 5px;
+			font-family: sans-serif;
+			font-size: 15px;
+			opacity: 0.8;
+			pointer-events: none;
+		}
+
+	</style>
+</head>
+<body>
+
+	<div class="container jumbotron">
+		{{#if user.name}}
+			<nav class="navbar navbar-inverse">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="/">FCC Voting App</a>
+			    </div>
+			    <ul class="nav navbar-nav">
+			      <li><a href="/mypolls">My Polls</a></li>
+			      <li><a href="/newpoll">New Poll</a></li>
+			    </ul>
+			    <ul class="nav navbar-nav navbar-right">
+			      <li><a href="/"><span class="glyphicon glyphicon-user"></span> {{user.name}}</a></li>
+			      <li><a href="/logout"><span class="glyphicon glyphicon-off"></span> Logout</a></li>
+			    </ul>
+			  </div>
+			</nav>
+		{{else}}
+			<nav class="navbar navbar-inverse">
+			  <div class="container-fluid">
+			    <div class="navbar-header">
+			      <a class="navbar-brand" href="/">FCC Voting App</a>
+			    </div>
+			    <ul class="nav navbar-nav navbar-right">
+			      <li><a href="/auth/twitter"><span class="glyphicon glyphicon-user"></span> Login With Twitter</a></li>
+			    </ul>
+			  </div>
+			</nav>
+		{{/if}}
+
+		{{{body}}}
+	</div>
+
+</body>
+</html>

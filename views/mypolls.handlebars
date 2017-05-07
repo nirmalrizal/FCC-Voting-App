@@ -1,0 +1,13 @@
+<div id="polls" class="container">
+	{{#if pollsArr}}
+		<h1 class="text-center">Your polls are</h1>
+		<ul class="list-group">
+		{{#each pollsArr}}
+			<a class="list-group-item text-center" href="/polls/{{_id}}">{{title}}</a>
+		{{/each}}
+		</ul>
+	{{else}}
+		<h2 class="text-center">You havenot created any polls till.</h2>
+		<h3 class="text-center">Create a new poll <a href="/newpoll">here.</a></h3>
+	{{/if}}
+</div>
