@@ -3,7 +3,9 @@
 		<h1 class="text-center">Your polls are</h1>
 		<ul class="list-group">
 		{{#each pollsArr}}
-			<a class="list-group-item text-center" href="/polls/{{_id}}">{{title}}</a>
+			{{#if title}}
+				<a class="list-group-item text-center" href="/polls/{{_id}}">{{title}}</a>
+			{{/if}}
 		{{/each}}
 		</ul>
 	{{else}}

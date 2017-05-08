@@ -201,26 +201,9 @@ router.get('/mypolls',function(req,res){
 
 router.post('/delete',function(req,res){
 	var id = req.body.id;
-	var sess = req.session;
-	var userID = sess.user.someID;
 	Poll.remove({ _id: id },function(err){
 		if(err){ console.log("Deleted!!") }
-		User.findOne({ someID: userID })
-			.exec(function(err,userData){
-				var myPolls = userData.myPolls;
-				var votedPolls = userData.votedPolls;
-				var newMyPolls = [];
-				for(var i=0;i<myPolls;i++){
-					if( id != myPolls[i] ){
-						newMyPolls.push(myPolls[i]);	
-					}
-					if( i >= (myPolls.length-1) ){
-						User.findOneAndUpdate({ someID: userID },{ $set: { myPolls: newMyPolls }},function(err,votedPolls){
-							res.redirect('/');	
-						});
-					}
-				}
-			});	
+		res.redirect('/');
 	});
 });
 
