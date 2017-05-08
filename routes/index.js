@@ -211,14 +211,15 @@ router.post('/delete',function(req,res){
 				var votedPolls = userData.votedPolls;
 				var newMyPolls = [];
 				for(var i=0;i<myPolls;i++){
-					if( id == myPolls[i] ){
-						break;
+					if( id != myPolls[i] ){
+						newMyPolls.push(myPolls[i]);	
 					}
-					newMyPolls.push(myPolls[i]);
+					if( i >= (myPolls.length-1) ){
+						User.findOneAndUpdate({ someID: userID },{ $set: { myPolls: newMyPolls }},function(err,votedPolls){
+							res.redirect('/');	
+						});
+					}
 				}
-				User.findOneAndUpdate({ someID: userID },{ $set: { myPolls: newMyPolls }},function(err,votedPolls){
-					res.redirect('/');	
-				});
 			});	
 	});
 });
