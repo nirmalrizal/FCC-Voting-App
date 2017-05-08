@@ -83,6 +83,14 @@ router.post('/vote',function(req,res){
 	var id = req.body.id;
 	var userID = sess.user.someID;
 	var candidate = req.body.candidate;
+	var custom = req.body.custom;
+	var customCandidate = [custom,0];
+	if(custom){
+		candidate = custom;
+	}
+	Poll.findOneAndUpdate({ _id: id },{ $push: { options: customCandidate }},function(err,customCandi){
+		console.log("Custom Candidate Updated !!!");
+	});
 	User.findOne({
 		someID: userID
 	})

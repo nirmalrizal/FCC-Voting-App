@@ -10,14 +10,20 @@
 		<h3><b>I would like to vote:</b></h3>
 		<div class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
 			<form action="/vote" method="post">
-				<select name="candidate" class="form-control">
+				<select name="candidate" class="form-control" id="candidate">
 					<option value="" disabled selected>Select your option</option>
 					{{#each poll.options}}
 						<option>{{this.[0]}}</option>
 					{{/each	}}
+					<option id="custom">I'd like a custom option.</option>
 				</select></br>
+				<div id="custom-div" hidden>
+					<label>Vote with my custom option:</label><br>
+					<input type="text" name="custom" id="custom">
+				</div>
+				<br>
 				<input type="text" name="id" class="hidden" value="{{poll.id}}">
-				<button class="btn btn-primary btn-block" type="submit">Vote</button>
+				<button class="btn btn-primary btn-block" type="submit" id="vote">Vote</button>
 				<br>
 				<button class="btn btn-default btn-block">
 				<a href="" id='twitter-share'>Share on Twitter</a>
