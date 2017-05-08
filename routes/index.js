@@ -216,8 +216,10 @@ router.post('/delete',function(req,res){
 					}
 					newMyPolls.push(myPolls[i]);
 				}
+				User.findOneAndUpdate({ someID: userID },{ $set: { myPolls: newMyPolls }},function(err,votedPolls){
+					res.redirect('/');	
+				});
 			});	
-		res.redirect('/');
 	});
 });
 
