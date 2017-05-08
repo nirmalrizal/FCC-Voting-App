@@ -101,53 +101,53 @@ router.post('/vote',function(req,res){
 	} else {
 		var userID = sess.user.someID;
 		if(custom){
-		candidate = custom;
-	}
-	Poll.findOneAndUpdate({ _id: id },{ $push: { options: customCandidate }},function(err,customCandi){
-		console.log("Custom Candidate Updated !!!");
-	});
-	User.findOne({
-		someID: userID
-	})
-	.exec(function(err,data){
-		var count = 0;
-		var votedPolls = data.votedPolls;
-		console.log(id);
-		for(var i=0;i<votedPolls.length;i++){
-			if( id == votedPolls[i] ){
-				count++;
+			candidate = custom;
+			Poll.findOneAndUpdate({ _id: id },{ $push: { options: customCandidate }},function(err,customCandi){
+				console.log("Custom Candidate Updated !!!");
+			});
+		}
+		User.findOne({
+			someID: userID
+		})
+		.exec(function(err,data){
+			var count = 0;
+			var votedPolls = data.votedPolls;
+			console.log(id);
+			for(var i=0;i<votedPolls.length;i++){
+				if( id == votedPolls[i] ){
+					count++;
+				}
 			}
-		}
-		if(count){
-			req.flash('vote','You have already voted in this poll.');
-			res.redirect('/polls/' + id);
-		} else {
-			Poll.findOne({
-					_id: id
-				}).exec(function(err,poll){
-					var options = poll.options;
-					for(var i=0;i<options.length;i++){
-						if(options[i][0] == candidate){
-							options[i][1] += 1;
-							break;
+			if(count){
+				req.flash('vote','You have already voted in this poll.');
+				res.redirect('/polls/' + id);
+			} else {
+				Poll.findOne({
+						_id: id
+					}).exec(function(err,poll){
+						var options = poll.options;
+						for(var i=0;i<options.length;i++){
+							if(options[i][0] == candidate){
+								options[i][1] += 1;
+								break;
+							}
 						}
-					}
-					Poll.findOneAndUpdate({ _id: id },{ $set: { options } },function(err,data){
-						if(err){
-							console.log(err);
-						} else {
-							User.findOneAndUpdate({ someID: userID },{ $push: { votedPolls: id }},function(err,votedPolls){
-								console.log("Vote Updated !!!");
-								var mes = "You voted " + candidate + ".";
-								req.flash('success',mes);
-								res.location('/polls/' + id);
-								res.redirect('/polls/' + id);
-							});
-						}
+						Poll.findOneAndUpdate({ _id: id },{ $set: { options } },function(err,data){
+							if(err){
+								console.log(err);
+							} else {
+								User.findOneAndUpdate({ someID: userID },{ $push: { votedPolls: id }},function(err,votedPolls){
+									console.log("Vote Updated !!!");
+									var mes = "You voted " + candidate + ".";
+									req.flash('success',mes);
+									res.location('/polls/' + id);
+									res.redirect('/polls/' + id);
+								});
+							}
+						});
 					});
-				});
-		}
-	});
+			}
+		});
 	}
 });
 
