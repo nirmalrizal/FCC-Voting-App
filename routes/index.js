@@ -201,8 +201,22 @@ router.get('/mypolls',function(req,res){
 
 router.post('/delete',function(req,res){
 	var id = req.body.id;
+	var sess = req.session;
+	var userID = sess.user.someID;
 	Poll.remove({ _id: id },function(err){
 		if(err){ console.log("Deleted!!") }
+		User.findOne({ someID: userID })
+			.exec(function(err,userData){
+				var myPolls = userData.myPolls;
+				var votedPolls = userData.votedPolls;
+				var newMyPolls = [];
+				for(var i=0;i<myPolls;i++){
+					if( id == myPolls[i] ){
+						break;
+					}
+					newMyPolls.push(myPolls[i]);
+				}
+			});	
 		res.redirect('/');
 	});
 });
