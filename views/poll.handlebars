@@ -1,11 +1,22 @@
 <div class="container">
 
 	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
-		{{#if message}}
+		{{#if alertMessage}}
 			<div class="alert alert-danger">
-			  <strong>Sorry!</strong> {{message}}
+			  <strong>Sorry!</strong> {{alertMessage}}
 			</div>
 		{{/if}}
+		{{#if successMessage}}
+			<div class="alert alert-success">
+			  {{successMessage}}
+			</div>
+		{{/if}}
+		{{#if mustLogin}}
+			<div class="alert alert-danger">
+			  You must login to vote.
+			</div>
+		{{/if}}
+
 		<h2>{{poll.title}}</h2>
 		<h3><b>I would like to vote:</b></h3>
 		<div class="col-md-8 col-lg-8 col-sm-10 col-xs-10">
@@ -25,8 +36,8 @@
 				<input type="text" name="id" class="hidden" value="{{poll.id}}">
 				<button class="btn btn-primary btn-block" type="submit" id="vote">Vote</button>
 				<br>
-				<button class="btn btn-default btn-block">
-				<a href="" id='twitter-share'>Share on Twitter</a>
+				<button class="btn btn-default btn-block" id="twitter-share-btn">
+					<a href="" id='twitter-share'><i class="fa fa-twitter"></i> Share on Twitter</a>
 				</button>
 				<script type="text/javascript">
 					var url = "https://twitter.com/intent/tweet?url=https%3A%2F%2Fmynodevotingapp.herokuapp.com%2Fpolls%2F" + "{{poll._id}}" + "&text=Poll %7C FCC-Voting-App";
@@ -36,9 +47,25 @@
 		</div>
 	</div>
 
-	<div class="col-md-5 col-lg-5 col-sm-10 col-xs-10">
+	<div class="col-md-7 col-lg-7 col-sm-10 col-xs-10">
 
-		<div id="piechart"></div>
+		<div id="piechart" class="col-md-7"></div>
+
+		<div id="legend" class="col-md-5">
+			{{#each poll.options}}
+				<div id="box-{{@index}}" class="col-md-1 box"></div></span>&nbsp;{{this.[0]}}<span><br><br>
+			{{/each}}
+		</div>
+
+		{{#if showDelete}}
+			<br>
+			<div class="col-md-8 col-lg-8 col-sm-8 col-xs-8" style="padding: 10px;margin-left: 10px;">
+				<form action="/delete" method="post">
+					<button class="btn btn-danger btn-block">Delete this poll</button>
+					<input type="text" name="id" class="hidden" value="{{poll.id}}">
+				</form>
+			</div>
+		{{/if}}
 
 		<script type="text/javascript">
 			
@@ -48,9 +75,11 @@
 			var radius = Math.min(width, height) / 2;
 			var dataset = [];
 			var arr = "{{poll.options}}".split(',');
+			var labels = [];
 
 			for(var i=0;i<arr.length;i=i+2){
 				dataset.push({ label: arr[i], count: Number(arr[i+1]) });
+				labels.push(arr[i]);
 			}
 
 			var svg = d3.select('#piechart')
@@ -68,9 +97,10 @@
 			svg.call(tip);
 
 			var color = d3.scaleOrdinal(d3.schemeCategory20);
+			var legendColor = ["#1f77b4", "#aec7e8", "#ff7f0e", "#ffbb78", "#2ca02c", "#98df8a", "#d62728", "#ff9896", "#9467bd", "#c5b0d5", "#8c564b", "#c49c94", "#e377c2", "#f7b6d2", "#7f7f7f", "#c7c7c7", "#bcbd22", "#dbdb8d", "#17becf", "#9edae5"];
 
 			var arc = d3.arc()
-					  .innerRadius(0)
+					  .innerRadius(80)
 					  .outerRadius(radius-padding);
 
 			var pie = d3.pie()
@@ -96,6 +126,12 @@
 					  var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
 					  return function(t) { return arc(i(t)); };
 					}
+
+			for(var i=0;i<labels.length;i++){
+				var divID = '#box-' + i;
+				var col = legendColor[i];
+				$(divID).css('background-color',col);
+			}
 
 		</script>
 

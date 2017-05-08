@@ -48,6 +48,7 @@ router.post('/newpoll',function(req,res){
 	var newPoll = new Poll();
 	newPoll.title = title;
 	newPoll.options = optionArr;
+	newPoll.owner = userID;
 
 	newPoll.save(function(err,poll){
 		if(err){
@@ -64,16 +65,27 @@ router.post('/newpoll',function(req,res){
 
 router.get('/polls/:id',function(req,res){
 	var sess = req.session
-	var user = sess.user;
-	var message = req.flash('vote');
-	console.log(message[0]);
+	var user;
+	var userID;
+	var mustLogin = true;
+	if(sess.user){
+		user = sess.user;
+		userID = user.someID;
+		mustLogin = false;
+	}
+	var alertMessage = req.flash('vote');
+	var successMessage = req.flash('success');
+	var showDelete = false;
 	Poll.findOne({
 		_id: req.params.id
 	}).exec(function(err,poll){
 		if(err){
 			res.send(err);
 		} else {
-			res.render('poll',{ poll, user, message: message[0] });
+			if( poll.owner == userID ){
+				showDelete = true;
+			}
+			res.render('poll',{ poll, user, alertMessage: alertMessage[0],successMessage: successMessage[0], showDelete, mustLogin });
 		}
 	});
 });
@@ -81,11 +93,14 @@ router.get('/polls/:id',function(req,res){
 router.post('/vote',function(req,res){
 	var sess = req.session
 	var id = req.body.id;
-	var userID = sess.user.someID;
 	var candidate = req.body.candidate;
 	var custom = req.body.custom;
 	var customCandidate = [custom,0];
-	if(custom){
+	if( !sess.user ){
+		res.redirect('/polls/' + id);
+	} else {
+		var userID = sess.user.someID;
+		if(custom){
 		candidate = custom;
 	}
 	Poll.findOneAndUpdate({ _id: id },{ $push: { options: customCandidate }},function(err,customCandi){
@@ -123,6 +138,8 @@ router.post('/vote',function(req,res){
 						} else {
 							User.findOneAndUpdate({ someID: userID },{ $push: { votedPolls: id }},function(err,votedPolls){
 								console.log("Vote Updated !!!");
+								var mes = "You voted " + candidate + ".";
+								req.flash('success',mes);
 								res.location('/polls/' + id);
 								res.redirect('/polls/' + id);
 							});
@@ -131,6 +148,7 @@ router.post('/vote',function(req,res){
 				});
 		}
 	});
+	}
 });
 
 router.get('/login',function(req,res){
@@ -179,6 +197,14 @@ router.get('/mypolls',function(req,res){
 				}
 			}
 		});
+});
+
+router.post('/delete',function(req,res){
+	var id = req.body.id;
+	Poll.remove({ _id: id },function(err){
+		if(err){ console.log("Deleted!!") }
+		res.redirect('/');
+	});
 });
 
 module.exports = router;
