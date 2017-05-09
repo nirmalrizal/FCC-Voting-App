@@ -9,6 +9,7 @@ router.get('/', function(req, res, next) {
 	var sess = req.session
 	var user = {};
 	user = sess.user;
+	var pollMessage = req.flash('poll');
   	Poll.find({})
   		.exec(function(err,poll){
   			if(err){
@@ -16,7 +17,7 @@ router.get('/', function(req, res, next) {
   			} else {
   				var polls = [];
   				polls = poll;
-  				res.render('index',{ polls, user });
+  				res.render('index',{ polls, user, pollMessage });
   			}
   		});
 });
@@ -80,7 +81,8 @@ router.get('/polls/:id',function(req,res){
 		_id: req.params.id
 	}).exec(function(err,poll){
 		if(err){
-			res.send(err);
+			req.flash('poll','The poll you requested doesnot exist.');
+			res.redirect('/');
 		} else {
 			if( poll.owner == userID ){
 				showDelete = true;

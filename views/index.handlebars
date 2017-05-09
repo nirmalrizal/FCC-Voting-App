@@ -1,11 +1,18 @@
-<h1 class="text-center">FCC Voting App</h1>
-<h3 class="text-center">Below are polls hosted by fcc-voting.</h3>
-<h3 class="text-center">Select a poll to see the results and vote, or <a href="/newpoll">make a new poll!</a></h3>
+<div class="container-fluid">
+	<h1 class="text-center">FCC Voting App</h1>
+	<h3 class="text-center">Below are polls hosted by fcc-voting.</h3>
+	<h3 class="text-center">Select a poll to see the results and vote, or <a href="/newpoll">make a new poll!</a></h3>
 
-<div id="polls" class="container">
-	<ul class="list-group">
-	{{#each polls}}
-		<a class="list-group-item text-center" href="/polls/{{_id}}">{{title}}</a>
-	{{/each}}
-	</ul>
+	<div id="polls" class="container">
+		{{#if pollMessage}}
+			<div class="alert alert-danger">
+			  <strong>Sorry!</strong> {{alertMessage}}
+			</div>
+		{{/if}}
+		<ul class="list-group">
+		{{#each polls}}
+			<a class="list-group-item text-center" href="/polls/{{_id}}">{{title}}</a>
+		{{/each}}
+		</ul>
+	</div>
 </div>
