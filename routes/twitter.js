@@ -3,6 +3,8 @@ var TwitterStrategy = require('passport-twitter').Strategy;
 
 var User = require('../models/user');
 var init = require('./init');
+var dotenv = require('dotenv');
+dotenv.load();
 
 passport.use(new TwitterStrategy({
     consumerKey: process.env.consumerKey,
