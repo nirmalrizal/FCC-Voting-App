@@ -2,13 +2,12 @@ var passport = require('passport');
 var TwitterStrategy = require('passport-twitter').Strategy;
 
 var User = require('../models/user');
-var config = require('../_config');
 var init = require('./init');
 
 passport.use(new TwitterStrategy({
-    consumerKey: config.twitter.consumerKey,
-    consumerSecret: config.twitter.consumerSecret,
-    callbackURL: config.twitter.callbackURL
+    consumerKey: process.env.consumerKey,
+    consumerSecret: process.env.consumerSecret,
+    callbackURL: process.env.callbackURL
   },
   function(accessToken, refreshToken, profile, done) {
 
