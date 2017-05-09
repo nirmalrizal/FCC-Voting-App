@@ -20,7 +20,7 @@ var app = express();
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-var myDB = "mongodb://votingapp:nirmal54321@ds131511.mlab.com:31511/votingapp";
+var myDB = process.env.DB_URI;
 mongoose.connect(myDB);
 
 //passport middleware
